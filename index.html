@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Глянец — детейлинг-центр</title>
+<meta name="description" content="Полировка, керамика, химчистка салона и защитная плёнка. Калькулятор стоимости и онлайн-запись.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0F1D33;--ink-2:#1B2E4D;--chrome:#C9D1DB;--aqua:#3CC6C0;--paper:#F2F5F8;--muted:#5D6B80;--line:#D6DDE6}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font:17px/1.6 "Exo 2",system-ui,sans-serif;background:var(--paper);color:var(--ink)}
+h1,h2,h3{line-height:1.08;margin:0 0 .5em;font-weight:800}
+h1{font-size:clamp(2.4rem,6vw,4.6rem);letter-spacing:-.01em}
+h2{font-size:clamp(1.8rem,4vw,2.8rem)}
+:focus-visible{outline:3px solid var(--aqua);outline-offset:2px}
+.wrap{max-width:1160px;margin:0 auto;padding:0 clamp(1rem,4vw,2rem)}
+.btn{display:inline-block;border:0;border-radius:6px;padding:.9em 1.6em;background:var(--aqua);color:var(--ink);font:800 1rem "Exo 2",sans-serif;cursor:pointer;text-decoration:none}
+.btn:hover{filter:brightness(1.08)}
+.hero{background:var(--ink);color:#fff;padding:1.2rem 0 4rem}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:3rem}
+.logo{font-weight:800;font-size:1.5rem;letter-spacing:.04em;color:#fff;text-decoration:none}
+.nav a.tel{color:var(--chrome);text-decoration:none;font-weight:600}
+.hero-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:3rem;align-items:center}
+.hero p{font-size:1.2rem;color:var(--chrome);max-width:28em}
+.compare{position:relative;border-radius:14px;overflow:hidden;background:#0A1526;aspect-ratio:16/10;user-select:none}
+.compare svg{position:absolute;inset:0;width:100%;height:100%}
+.compare .after{clip-path:inset(0 0 0 var(--pos,50%))}
+.handle{position:absolute;top:0;bottom:0;left:var(--pos,50%);width:3px;background:#fff;transform:translateX(-1.5px);pointer-events:none}
+.handle::after{content:"⟷";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:42px;height:42px;border-radius:50%;background:#fff;color:var(--ink);display:grid;place-items:center;font-weight:800}
+.compare input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize;margin:0}
+.tags{position:absolute;bottom:.8rem;left:.8rem;right:.8rem;display:flex;justify-content:space-between;pointer-events:none;font-weight:600;font-size:.9rem}
+.tags span{background:rgba(15,29,51,.75);color:#fff;padding:.2em .7em;border-radius:4px}
+section{padding:clamp(3.5rem,8vw,5.5rem) 0}
+.lead{color:var(--muted);max-width:40em;font-size:1.1rem}
+.calc{display:grid;grid-template-columns:1.4fr 1fr;gap:2rem;margin-top:2rem;align-items:start}
+.classes{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-bottom:1.5rem}
+.opt input{position:absolute;opacity:0}
+.opt span{display:block;border:2px solid var(--line);border-radius:10px;padding:.8rem 1rem;cursor:pointer;background:#fff;height:100%}
+.opt span small{display:block;color:var(--muted)}
+.opt input:checked+span{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.opt input:focus-visible+span{outline:3px solid var(--aqua)}
+.services{display:grid;gap:.6rem}
+.svc input{position:absolute;opacity:0}
+.svc span{display:grid;grid-template-columns:auto 1fr auto;gap:.2rem 1rem;align-items:center;border:2px solid var(--line);border-radius:10px;padding:.8rem 1rem;cursor:pointer;background:#fff}
+.svc span::before{content:"";width:20px;height:20px;border-radius:5px;border:2px solid var(--muted);grid-row:span 2}
+.svc input:checked+span{border-color:var(--aqua)}
+.svc input:checked+span::before{background:var(--aqua);border-color:var(--aqua);box-shadow:inset 0 0 0 3px #fff}
+.svc input:focus-visible+span{outline:3px solid var(--aqua)}
+.svc b{font-weight:600}.svc em{font-style:normal;font-weight:800}
+.svc small{grid-column:2/-1;color:var(--muted)}
+.total{background:var(--ink);color:#fff;border-radius:14px;padding:1.6rem;position:sticky;top:1rem}
+.total .sum{font-size:2.6rem;font-weight:800;margin:.2rem 0}
+.total p{color:var(--chrome);margin:.3rem 0}
+.total ul{padding-left:1.1rem;color:var(--chrome);margin:.8rem 0 1.2rem}
+.total .btn{width:100%;text-align:center}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;list-style:none;padding:0;counter-reset:s}
+.steps li{counter-increment:s;border-top:3px solid var(--ink);padding-top:.8rem}
+.steps li::before{content:counter(s,decimal-leading-zero);font-weight:800;color:var(--aqua);font-size:1.4rem;display:block}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:1rem;max-width:720px;margin-top:1.5rem}
+.form label{display:grid;gap:.3rem;font-size:.9rem;color:var(--muted)}
+.form input,.form select{font:inherit;padding:.75em .9em;border:1px solid var(--line);border-radius:8px;background:#fff}
+.form .full{grid-column:1/-1}
+.err{color:#B42318;font-weight:600;margin:0;min-height:1.3em}
+.ok{border-left:5px solid var(--aqua);background:#fff;padding:1.2rem 1.5rem;border-radius:8px;max-width:720px}
+footer{background:var(--ink);color:var(--chrome);padding:2rem 0;font-size:.9rem}
+@media (max-width:860px){.hero-grid,.calc{grid-template-columns:1fr}.steps{grid-template-columns:1fr 1fr}.total{position:static}}
+@media (max-width:540px){.classes,.form{grid-template-columns:1fr}.steps{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div class="nav"><a class="logo" href="#">ГЛЯНЕЦ</a><a class="tel" href="tel:+74950000006">+7 495 000-00-06</a></div>
+    <div class="hero-grid">
+      <div>
+        <h1>Возвращаем кузову заводской блеск</h1>
+        <p>Полировка, керамика и химчистка салона в боксе с промышленным светом. Перед работой показываем все дефекты ЛКП на фото.</p>
+        <a class="btn" href="#calc">Рассчитать стоимость</a>
+      </div>
+      <div class="compare" id="compare" style="--pos:50%">
+        <svg viewBox="0 0 640 400" aria-hidden="true">
+          <defs><linearGradient id="dirt" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#5a5248"/><stop offset="1" stop-color="#3e3830"/></linearGradient></defs>
+          <rect width="640" height="400" fill="#121c2c"/>
+          <path d="M70 270 Q80 200 170 190 L240 140 Q270 120 330 120 L420 120 Q470 122 510 180 L560 190 Q600 200 600 250 L600 280 L70 280 Z" fill="url(#dirt)"/>
+          <g fill="#2c2620" opacity=".8"><circle cx="150" cy="250" r="9"/><circle cx="330" cy="235" r="14"/><circle cx="470" cy="245" r="7"/><circle cx="260" cy="200" r="6"/><circle cx="540" cy="225" r="10"/><ellipse cx="400" cy="262" rx="40" ry="8"/></g>
+          <path d="M255 145 L330 130 L330 185 L215 188 Z M345 130 L415 130 Q450 135 480 182 L345 185 Z" fill="#4b5560" opacity=".6"/>
+          <circle cx="180" cy="285" r="42" fill="#1a1a1a"/><circle cx="180" cy="285" r="20" fill="#4a4540"/><circle cx="490" cy="285" r="42" fill="#1a1a1a"/><circle cx="490" cy="285" r="20" fill="#4a4540"/>
+        </svg>
+        <svg class="after" viewBox="0 0 640 400" aria-hidden="true">
+          <defs><linearGradient id="paint" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#2F6FE0"/><stop offset=".55" stop-color="#173E8F"/><stop offset="1" stop-color="#0D2457"/></linearGradient>
+            <linearGradient id="shine" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>
+          <rect width="640" height="400" fill="#16243a"/>
+          <path d="M70 270 Q80 200 170 190 L240 140 Q270 120 330 120 L420 120 Q470 122 510 180 L560 190 Q600 200 600 250 L600 280 L70 280 Z" fill="url(#paint)"/>
+          <path d="M90 215 Q300 196 590 214 L590 222 Q300 206 90 224 Z" fill="url(#shine)"/>
+          <path d="M255 145 L330 130 L330 185 L215 188 Z M345 130 L415 130 Q450 135 480 182 L345 185 Z" fill="#9CC3F5" opacity=".75"/>
+          <circle cx="180" cy="285" r="42" fill="#0b0b0b"/><circle cx="180" cy="285" r="20" fill="#c9d1db"/><circle cx="490" cy="285" r="42" fill="#0b0b0b"/><circle cx="490" cy="285" r="20" fill="#c9d1db"/>
+          <path d="M60 300 L610 300" stroke="#3CC6C0" stroke-width="2" opacity=".4"/>
+        </svg>
+        <div class="handle"></div>
+        <div class="tags"><span>До</span><span>После</span></div>
+        <input type="range" min="0" max="100" value="50" aria-label="Сравнить до и после">
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+<section id="calc">
+  <div class="wrap">
+    <h2>Калькулятор стоимости</h2>
+    <p class="lead">Цена зависит от размера машины. Отметьте услуги, итог и время работы посчитаются сразу.</p>
+    <form class="calc" id="calcForm">
+      <div>
+        <div class="classes" role="radiogroup" aria-label="Класс автомобиля">
+          <label class="opt"><input type="radio" name="cls" value="1" checked><span><b>Седан, хэтчбек</b><small>Solaris, Octavia, Camry</small></span></label>
+          <label class="opt"><input type="radio" name="cls" value="1.2"><span><b>Кроссовер</b><small>Tiguan, RAV4, Sportage</small></span></label>
+          <label class="opt"><input type="radio" name="cls" value="1.45"><span><b>Внедорожник</b><small>Land Cruiser, X5, минивэны</small></span></label>
+        </div>
+        <div class="services" id="services"></div>
+      </div>
+      <aside class="total" aria-live="polite">
+        <span>Итого</span>
+        <div class="sum" id="sum">0 ₽</div>
+        <p id="time"></p>
+        <ul id="list"></ul>
+        <a class="btn" href="#book">Записаться на работы</a>
+      </aside>
+    </form>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <h2>Как проходит полировка</h2>
+    <ol class="steps">
+      <li><b>Осмотр и замер толщиномером</b><br>Знаем, сколько лака можно снять без риска.</li>
+      <li><b>Двухфазная мойка</b><br>Убираем битум и металлические вкрапления.</li>
+      <li><b>Абразивная полировка</b><br>Удаляем царапины и голограммы за 2–3 прохода.</li>
+      <li><b>Защита</b><br>Воск или керамика, чтобы блеск держался.</li>
+    </ol>
+  </div>
+</section>
+
+<section id="book" style="padding-top:0">
+  <div class="wrap">
+    <h2>Запись</h2>
+    <form class="form" id="bookForm" novalidate>
+      <label>Имя<input name="name" autocomplete="name"></label>
+      <label>Телефон<input name="phone" type="tel" placeholder="+7 (___) ___-__-__" autocomplete="tel"></label>
+      <label>Марка и модель<input name="car" placeholder="Например, Kia Sportage"></label>
+      <label>Удобная дата<input name="date" type="date" id="date"></label>
+      <p class="err full" id="err" role="alert"></p>
+      <button class="btn full" type="submit">Записаться</button>
+    </form>
+  </div>
+</section>
+</main>
+<footer><div class="wrap">Глянец, Москва, Нагатинская ул., 16. Ежедневно 9:00–21:00.</div></footer>
+
+<script>
+const $ = s => document.querySelector(s);
+const rub = n => (Math.round(n / 100) * 100).toLocaleString('ru-RU') + ' ₽';
+const SERVICES = [
+  ['wash','Детейлинг-мойка','Двухфазная, с очисткой дисков и проёмов', 2500, 1.5, true],
+  ['polish','Восстановительная полировка','Удаляем царапины и голограммы', 18000, 10],
+  ['ceramic','Керамическое покрытие','Защита до 2 лет, гидрофоб', 22000, 6],
+  ['interior','Химчистка салона','Сиденья, потолок, ковры, пластик', 12000, 6],
+  ['leather','Уход за кожей','Очистка и пропитка', 5000, 2],
+  ['film','Плёнка на зоны риска','Капот, бампер, фары, зеркала', 45000, 14]
+];
+$('#services').innerHTML = SERVICES.map(([id, n, d, p, h, on]) => `<label class="svc"><input type="checkbox" name="svc" value="${id}" ${on ? 'checked' : ''}>
+  <span><b>${n}</b><em data-price="${id}"></em><small>${d}, около ${String(h).replace(".", ",")} ч</small></span></label>`).join('');
+function calc(){
+  const k = +document.querySelector('[name=cls]:checked').value;
+  const chosen = SERVICES.filter(s => document.querySelector(`[value=${s[0]}]`).checked);
+  SERVICES.forEach(s => { document.querySelector(`[data-price=${s[0]}]`).textContent = 'от ' + rub(s[3] * k); });
+  const sum = chosen.reduce((a, s) => a + s[3] * k, 0), hours = chosen.reduce((a, s) => a + s[4], 0);
+  $('#sum').textContent = rub(sum);
+  $('#time').textContent = hours ? (hours <= 9 ? `Готово за ${String(hours).replace(".", ",")} ч, заберёте в тот же день` : `Займёт около ${Math.ceil(hours / 9)} рабочих дней`) : 'Выберите хотя бы одну услугу';
+  $('#list').innerHTML = chosen.map(s => `<li>${s[1]}</li>`).join('');
+  if (chosen.length >= 3) $('#list').innerHTML += '<li style="color:var(--aqua)">Скидка 10% на комплекс уточним при осмотре</li>';
+}
+$('#calcForm').addEventListener('change', calc);
+
+const cmp = $('#compare');
+cmp.querySelector('input').addEventListener('input', e => cmp.style.setProperty('--pos', e.target.value + '%'));
+
+const f = $('#bookForm');
+const d = new Date(); $('#date').min = new Date(d - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
+f.phone.addEventListener('input', () => { let x = f.phone.value.replace(/\D/g,''); if (x[0] === '8') x = '7' + x.slice(1); if (x[0] !== '7') x = '7' + x; x = x.slice(0,11);
+  let o = '+7'; if (x.length > 1) o += ' (' + x.slice(1,4); if (x.length > 4) o += ') ' + x.slice(4,7); if (x.length > 7) o += '-' + x.slice(7,9); if (x.length > 9) o += '-' + x.slice(9); f.phone.value = o; });
+f.addEventListener('submit', e => {
+  e.preventDefault();
+  if (f.name.value.trim().length < 2) { $('#err').textContent = 'Укажите имя.'; f.name.focus(); return; }
+  if (f.phone.value.replace(/\D/g,'').length !== 11) { $('#err').textContent = 'Телефон нужен полностью, 11 цифр.'; f.phone.focus(); return; }
+  const works = [...document.querySelectorAll('[name=svc]:checked')].map(c => SERVICES.find(s => s[0] === c.value)[1].toLowerCase()).join(', ');
+  f.outerHTML = `<div class="ok"><h3>Заявка принята</h3><p>${f.name.value.trim()}, мастер перезвонит в течение 15 минут, чтобы подобрать время.${works ? ` Работы: ${works}, предварительно ${$('#sum').textContent}.` : ''}</p></div>`;
+});
+calc();
+</script>
+</body>
+</html>
